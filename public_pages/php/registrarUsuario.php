@@ -1,6 +1,6 @@
 <?php
 // Incluye la configuración de la base de datos
-require_once('config.php');
+require_once('../config.php');
 
 // Obtiene los datos del formulario
 $nombreCompleto = $_POST['nombreCompleto'];
