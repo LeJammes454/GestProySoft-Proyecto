@@ -1,22 +1,26 @@
 CREATE DATABASE RESTAURANTE;
 USE RESTAURANTE;
-
+ 
 -- DROP DATABASE RESTAURANTE;
 -- Crear la tabla de usuarios
 CREATE TABLE usuarios (
     id_usuario INT PRIMARY KEY,
-    nombre VARCHAR(255),
+    nombre_completo VARCHAR(255),
     correo VARCHAR(255),
     contrasena VARCHAR(255),
-    rol VARCHAR(50)
+    rol VARCHAR(50),
+    edad INT
 );
 
+select * from usuarios;
 -- Crear la tabla de clientes
 CREATE TABLE clientes (
     id_cliente INT PRIMARY KEY,
     id_usuario INT,
+	nombre_completo VARCHAR(255),
     telefono VARCHAR(20),
     direccion VARCHAR(255),
+    edad INT,
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
@@ -99,62 +103,3 @@ CREATE TABLE historial_pedidos_reservas (
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
     FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva)
 );
-
--- Insertar datos en la tabla de usuarios
-INSERT INTO usuarios (id_usuario, nombre, correo, contrasena, rol)
-VALUES
-    (1, 'Admin Usuario', 'admin@example.com', 'admin123', 'administrador'),
-    (2, 'Cliente Prueba', 'cliente@example.com', 'cliente123', 'cliente');
-
--- Insertar datos en la tabla de clientes
-INSERT INTO clientes (id_cliente, id_usuario, telefono, direccion)
-VALUES
-    (1, 2, '123456789', 'Calle Principal 123');
-
--- Insertar datos en la tabla de pedidos
-INSERT INTO pedidos (id_pedido, id_cliente, fecha_pedido, estado)
-VALUES
-    (1, 1, '2023-01-01', 'en proceso'),
-    (2, 1, '2023-02-01', 'entregado');
-
--- Insertar datos en la tabla de reservas
-INSERT INTO reservas (id_reserva, id_cliente, fecha_reserva, hora_reserva, id_mesa, estado)
-VALUES
-    (1, 1, '2023-03-01', '18:00:00', 1, 'confirmada'),
-    (2, 1, '2023-04-01', '19:30:00', 2, 'pendiente');
-
--- Insertar datos en la tabla de bebidas
-INSERT INTO bebidas (id_bebida, nombre, descripcion, precio, id_categoria, imagen_url)
-VALUES
-    (1, 'Coca Cola', 'Refresco de cola', 2.50, 1, 'https://example.com/cocacola.jpg'),
-    (2, 'Agua Mineral', 'Agua sin gas', 1.50, 1, 'https://example.com/agua.jpg');
-
--- Insertar datos en la tabla de platillos
-INSERT INTO platillos (id_platillo, nombre, descripcion, precio, id_categoria, imagen_url)
-VALUES
-    (1, 'Pizza Margarita', 'Pizza con tomate, mozzarella y albahaca', 10.99, 2, 'https://example.com/pizza.jpg'),
-    (2, 'Pasta Alfredo', 'Pasta con salsa Alfredo', 8.99, 2, 'https://example.com/pasta.jpg');
-
--- Insertar datos en la tabla de mesas
-INSERT INTO mesas (id_mesa, numero_mesa, capacidad, disponible)
-VALUES
-    (1, 101, 4, TRUE),
-    (2, 102, 6, TRUE);
-
--- Insertar datos en la tabla de categorías
-INSERT INTO categorias (id_categoria, nombre)
-VALUES
-    (1, 'Bebidas'),
-    (2, 'Platillos');
-
--- Insertar datos en la tabla de comentarios y valoraciones
-INSERT INTO comentarios_valoraciones (id_comentario, id_cliente, comentario, valoracion)
-VALUES
-    (1, 1, '¡Excelente servicio!', 5),
-    (2, 1, 'La comida estaba deliciosa', 4);
-
--- Insertar datos en la tabla de historial de pedidos y reservas
-INSERT INTO historial_pedidos_reservas (id_historial, id_cliente, id_pedido, id_reserva, fecha_historial, descripcion)
-VALUES
-    (1, 1, 1, NULL, '2023-05-01', 'Historial de pedido generado automáticamente'),
-    (2, 1, NULL, 2, '2023-06-01', 'Historial de reserva generado automáticamente');
