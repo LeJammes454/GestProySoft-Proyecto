@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <link rel="stylesheet" href="../css/estilosRegis.css">
+    <link rel="stylesheet" href="css/estilosRegis.css">
 
     <!-- Importa los estilos de Bootstrap (puedes utilizar una CDN) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -27,8 +27,8 @@
                 <input type="number" id="edad" class="form-control" min="0" required>
             </div>
             <div class="form-group">
-                <label for="correo" id="correoEl">Correo Electronico</label>
-                <input id="correo" type="text" class="form-control" required>
+                <label for="correo" id="correoEl">Correo Electrónico</label>
+                <input id="correo" type="email" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="passwo" id="password">Contraseña</label>
@@ -36,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label for="confirmPass" id="confirmarPass">Confirmar Contraseña</label>
-                <input type="password" class="form-control" required>
+                <input id="confirmPass" type="password" class="form-control" required>
             </div>
 
             <div class="button-container">
@@ -45,12 +45,10 @@
         </form>
     </div>
 
-    <!-- Importa los scripts de Bootstrap (puedes utilizar una CDN) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Importa el archivo JavaScript -->
-    <script src="../js/validacionLogin.js"></script>
+    <script src="js/validacionLogin.js"></script> <!-- Cambié el nombre del archivo JS -->
 </body>
 </html>

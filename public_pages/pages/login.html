@@ -5,22 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="../css/estiloLogin.css">
+    <link rel="stylesheet" href="css/estiloLogin.css">
 </head>
 <body>
     <div id="fondo"></div>
     <div id="container">
-        <form action="">
+        <form id="loginForm" novalidate> <!-- Cambié el ID del formulario -->
             <h1 id="inica">Iniciar Sesión</h1>
             <label for="correo" id="correoEl">Correo Electrónico</label>
-            <input id="correo" type="text" placeholder="Ingrese su correo">
+            <input id="correo" type="email" placeholder="Ingrese su correo">
             <label for="passwo" id="pass">Contraseña</label>
             <input id="passwo" type="password" placeholder="Ingrese su contraseña">
 
+            <div id="errorContainer"></div>
+
             <div class="button-container">
-                <a href="../index.html">
-                    <button id="btnSesion" type="button" onclick="validarInicioSesion()">Iniciar Sesión</button>
-                </a>
+                <button id="btnSesion" type="button" onclick="validarInicioSesion()">Iniciar Sesión</button>
                 <a href="registrarse.html">
                     <button id="btnRegistrarse" type="button">Registrarse</button>
                 </a>
@@ -28,6 +28,6 @@
         </form>
     </div>
 
-    <script src="validacionLogin.js"></script>
+    <script src="js/validacionLogin.js"></script> <!-- Cambié el nombre del archivo JS -->
 </body>
 </html>
