@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+#fondo {
+    background: linear-gradient(orange, rgb(233, 132, 0), rgb(155, 70, 0));
+    background-size: cover;
+    filter: blur(5px);
+    height: 100vh;
+    position: fixed;
+    width: 100vw;
+    z-index: -1;
+}
+
+#container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+form {
+    width: 350px;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1#inica {
+    text-align: center;
+    color: black;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: rgb(70, 70, 70);
+}
+
+input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input::placeholder {
+    color: rgb(100, 100, 100);
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.button-container button {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    background-color: rgb(0, 0, 0);
+}
+
+.button-container a {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    margin-left: 1rem;
+}
+
+#btnRegistrarse {
+    background-color: rgb(0, 180, 120);
+}

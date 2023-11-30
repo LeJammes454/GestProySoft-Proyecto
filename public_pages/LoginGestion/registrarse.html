@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="../css/estilosRegis.css">
+
+    <!-- Importa los estilos de Bootstrap (puedes utilizar una CDN) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="fondo"></div>
+    <div id="alertContainer" class="position-fixed w-100 mt-3">
+        <!-- Contenedor para las alertas -->
+    </div>
+    <div id="container">
+        <form id="registrationForm" novalidate>
+            <h1 id="inica">Registrarse</h1>
+            <div class="form-group">
+                <label for="nombreCompl">Nombre Completo</label>
+                <input type="text" id="nombreCompl" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" class="form-control" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="correo" id="correoEl">Correo Electronico</label>
+                <input id="correo" type="text" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="passwo" id="password">Contraseña</label>
+                <input id="passwo" type="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPass" id="confirmarPass">Confirmar Contraseña</label>
+                <input type="password" class="form-control" required>
+            </div>
+
+            <div class="button-container">
+                <button id="btnRegistrarse" type="button" class="btn btn-primary" onclick="validateForm()">Registrarse</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Importa los scripts de Bootstrap (puedes utilizar una CDN) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Importa el archivo JavaScript -->
+    <script src="../js/validacionLogin.js"></script>
+</body>
+</html>
