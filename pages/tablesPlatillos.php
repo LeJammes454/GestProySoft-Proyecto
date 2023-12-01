@@ -1,3 +1,11 @@
+<?php
+require_once('config.php');
+
+$db = new Database();
+$platillos = $db->query("SELECT * FROM platillos");
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -121,15 +129,14 @@
                         <div class="collapse" id="pagesCollapseTables" aria-labelledby="headingOne"
                             data-bs-parent="#sidenavAccordionPages">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="tablesBebidas.html">Bebidas</a>
-                                <a class="nav-link" href="tablesPlatillos.html">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.html">Clientes</a>
-                                <a class="nav-link" href="tablesPedidos.html">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.html">Historial pedidos</a>
-                                <a class="nav-link" href="tablesMesas.html">Mesas</a>
-                                <a class="nav-link" href="tablesReservas.html">Reservas</a>
-                                <a class="nav-link" href="tablesComVal.html">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.html">Usuarios</a>
+                                <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
+                                <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
+                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
+                                <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesReservas.php">Reservas</a>
+                                <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                             </nav>
                         </div>
 
@@ -152,7 +159,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
                                 <i class="fas fa-table me-1"></i>
-                                DataTable Example
+                                DataTable Plantillos
                             </div>
 
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -166,45 +173,33 @@
                             <table id="datatablesSimple">
                                 <thead>
                                     <tr>
-                                        <!-- Ejemplos columnas que se mostaran -->
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>ID Platillo</th>
+                                        <th>Nombre</th>
+                                        <th>Descripción</th>
+                                        <th>Precio</th>
+                                        <th>ID Categoría</th>
+                                        <th>Imagen URL</th>
                                         <th>Acciones</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Ejemplos de datos -->
-                                    <tr>
-                                        <td>Shad Decker</td>
-                                        <td>Regional Director</td>
-                                        <td>Edinburgh</td>
-                                        <td>51</td>
-                                        <td>2008/11/13</td>
-                                        <td>$183,000</td>}
-                                        <td><button type="button" class="btn btn-warning">Modificar</button></td>
-                                        <td><button type="button" class="btn btn-danger">Eliminar</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Michael Bruce</td>
-                                        <td>Javascript Developer</td>
-                                        <td>Singapore</td>
-                                        <td>29</td>
-                                        <td>2011/06/27</td>
-                                        <td>$183,000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Donna Snider</td>
-                                        <td>Customer Support</td>
-                                        <td>New York</td>
-                                        <td>27</td>
-                                        <td>2011/01/25</td>
-                                        <td>$112,000</td>
-                                    </tr>
+                                    <?php
+                                    foreach ($platillos as $platillo) {
+                                        echo "<tr>";
+                                        echo "<td>" . $platillo["id_platillo"] . "</td>";
+                                        echo "<td>" . $platillo["nombre"] . "</td>";
+                                        echo "<td>" . $platillo["descripcion"] . "</td>";
+                                        echo "<td>" . $platillo["precio"] . "</td>";
+                                        echo "<td>" . $platillo["id_categoria"] . "</td>";
+                                        echo "<td><img src='" . $platillo["imagen_url"] . "' alt='Imagen del platillo' style='max-width: 100px; max-height: 100px;'></td>";
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar' data-id='" . $platillo["id_platillo"] . "'>Modificar</button></td>";
+
+                                        echo "<td><button type='button' class='btn btn-danger' onclick='eliminarPlatillo(" . $platillo["id_platillo"] . ")'>Eliminar</button></td>";
+
+                                        echo "</tr>";
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -216,21 +211,55 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Modal de Bootstrap</h5>
+                                <h5 class="modal-title">Agregar Platillo</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                Contenido del modal aquí.
+                                <form id="formAgregarPlatillo">
+                                    <div class="mb-3">
+                                        <label for="nombrePlatillo" class="form-label">Nombre del Platillo:</label>
+                                        <input type="text" class="form-control" id="nombrePlatillo"
+                                            name="nombrePlatillo" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="descripcionPlatillo" class="form-label">Descripción del
+                                            Platillo:</label>
+                                        <textarea class="form-control" id="descripcionPlatillo"
+                                            name="descripcionPlatillo" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="precioPlatillo" class="form-label">Precio del Platillo:</label>
+                                        <input type="number" step="0.01" class="form-control" id="precioPlatillo"
+                                            name="precioPlatillo" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="categoriaPlatillo" class="form-label">Categoría del
+                                            Platillo:</label>
+                                        <select class="form-select" id="categoriaPlatillo" name="categoriaPlatillo"
+                                            required>
+                                            <!-- Aquí puedes agregar opciones dinámicamente desde tu base de datos -->
+                                            <option value="1">Categoría 1</option>
+                                            <option value="2">Categoría 2</option>
+                                            <!-- Agrega más opciones según tus necesidades -->
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="imagenPlatillo" class="form-label">URL de la Imagen del
+                                            Platillo:</label>
+                                        <input type="text" class="form-control" id="imagenPlatillo"
+                                            name="imagenPlatillo">
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarPlatillo()">Guardar
+                                    cambios</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </main>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
@@ -240,10 +269,23 @@
                     </div>
                 </div>
             </footer>
+            <!-- Toast -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <!-- Puedes personalizar la cabecera del toast según tus necesidades -->
+                        <strong class="me-auto">Mensaje</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- El contenido del mensaje del toast se actualizará dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
@@ -252,4 +294,77 @@
     <script src="../js/datatables-simple-demo.js"></script>
 </body>
 
+<script>
+
+    function eliminarPlatillo(idPlatillo) {
+        // Puedes mostrar un mensaje de confirmación o realizar una solicitud AJAX aquí
+        var confirmacion = confirm("¿Estás seguro de que deseas eliminar este platillo?");
+
+        if (confirmacion) {
+            // Realiza la acción de eliminación (puedes redirigir a un script PHP que maneje la eliminación)
+            window.location.href = 'eliminar_platillo.php?id=' + idPlatillo;
+        }
+    }
+    function agregarPlatillo() {
+        // Obtener los valores del formulario
+        var nombrePlatillo = $("#nombrePlatillo").val();
+        var descripcionPlatillo = $("#descripcionPlatillo").val();
+        var precioPlatillo = $("#precioPlatillo").val();
+        var categoriaPlatillo = $("#categoriaPlatillo").val();
+        var imagenPlatillo = $("#imagenPlatillo").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        // Enviar los datos al servidor mediante AJAX
+        $.ajax({
+            type: "POST",
+            url: "agregarPlatillo.php",
+            data: {
+                nombrePlatillo: nombrePlatillo,
+                descripcionPlatillo: descripcionPlatillo,
+                precioPlatillo: precioPlatillo,
+                categoriaPlatillo: categoriaPlatillo,
+                imagenPlatillo: imagenPlatillo
+            },
+            success: function (response) {
+                // Mostrar el toast
+                mostrarToast(response);
+
+                // Limpiar los campos del modal
+                limpiarCamposModal();
+
+                // Cerrar el modal
+                $("#myModal").modal("hide");
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function mostrarToast(message) {
+        // Actualizar el contenido del toast con el mensaje recibido
+        $("#liveToast .toast-body").text(message);
+
+        // Mostrar el toast
+        var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        toast.show();
+    }
+
+
+
+    function limpiarCamposModal() {
+        // Limpiar los campos del formulario
+        $("#nombrePlatillo").val("");
+        $("#descripcionPlatillo").val("");
+        $("#precioPlatillo").val("");
+        $("#categoriaPlatillo").val("");
+        $("#imagenPlatillo").val("");
+    }
+</script>
+
+
 </html>
+<?php
+$db->closeConnection();
+?>

@@ -1,3 +1,9 @@
+<?php
+require_once('config.php');
+
+$db = new Database();
+$usuarios = $db->query("SELECT * FROM usuarios");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -121,15 +127,14 @@
                         <div class="collapse" id="pagesCollapseTables" aria-labelledby="headingOne"
                             data-bs-parent="#sidenavAccordionPages">
                             <nav class="sb-sidenav-menu-nested nav">
-                                <a class="nav-link" href="tablesBebidas.html">Bebidas</a>
-                                <a class="nav-link" href="tablesPlatillos.html">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.html">Clientes</a>
-                                <a class="nav-link" href="tablesPedidos.html">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.html">Historial pedidos</a>
-                                <a class="nav-link" href="tablesMesas.html">Mesas</a>
-                                <a class="nav-link" href="tablesReservas.html">Reservas</a>
-                                <a class="nav-link" href="tablesComVal.html">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.html">Usuarios</a>
+                                <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
+                                <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
+                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
+                                <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesReservas.php">Reservas</a>
+                                <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                             </nav>
                         </div>
 
@@ -166,45 +171,31 @@
                             <table id="datatablesSimple">
                                 <thead>
                                     <tr>
-                                        <!-- Ejemplos columnas que se mostaran -->
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>ID Usuario</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Correo</th>
+                                        <th>Contraseña</th>
+                                        <th>Rol</th>
+                                        <th>Edad</th>
                                         <th>Acciones</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Ejemplos de datos -->
-                                    <tr>
-                                        <td>Shad Decker</td>
-                                        <td>Regional Director</td>
-                                        <td>Edinburgh</td>
-                                        <td>51</td>
-                                        <td>2008/11/13</td>
-                                        <td>$183,000</td>}
-                                        <td><button type="button" class="btn btn-warning">Modificar</button></td>
-                                        <td><button type="button" class="btn btn-danger">Eliminar</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Michael Bruce</td>
-                                        <td>Javascript Developer</td>
-                                        <td>Singapore</td>
-                                        <td>29</td>
-                                        <td>2011/06/27</td>
-                                        <td>$183,000</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Donna Snider</td>
-                                        <td>Customer Support</td>
-                                        <td>New York</td>
-                                        <td>27</td>
-                                        <td>2011/01/25</td>
-                                        <td>$112,000</td>
-                                    </tr>
+                                    <?php
+                                    foreach ($usuarios as $usuario) {
+                                        echo "<tr>";
+                                        echo "<td>" . $usuario["id_usuario"] . "</td>";
+                                        echo "<td>" . $usuario["nombre_completo"] . "</td>";
+                                        echo "<td>" . $usuario["correo"] . "</td>";
+                                        echo "<td>" . $usuario["contrasena"] . "</td>";
+                                        echo "<td>" . $usuario["rol"] . "</td>";
+                                        echo "<td>" . $usuario["edad"] . "</td>";
+                                        echo "<td><button type='button' class='btn btn-warning'>Modificar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-danger'>Eliminar</button></td>";
+                                        echo "</tr>";
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -243,7 +234,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
@@ -253,3 +244,6 @@
 </body>
 
 </html>
+<?php
+$db->closeConnection();
+?>

@@ -1,40 +1,42 @@
 <?php
-class Conexion
-{
-    
-    private static $servidor = 'localhost' ;
-    private static $db = 'mysql' ;
-    private static $usuario = 'root';
-    private static $password = '200114Bpp-';
-    private static $puerto = '3306';
-    
-    private static $conexion  = null;
-
-    public function __construct() {
-        exit('Instancia no permitida');
-    }
-    
-    public static function conectar()
+    class Database
     {
-
-        if (self::$conexion==null)
-        {     
-            try
-            {
-                self::$conexion =  new PDO("mysql:host=" . self::$servidor . ";port=" . self::$puerto . ";dbname=" . self::$RESTAURANTE, self::$usuario, self::$password);
-                //self::$conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
-                self::$conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            }
-            catch(PDOException $e)
-            {
-                exit($e->getMessage()); 
+        private $servername = "localhost";
+        private $username = "root";
+        private $password = "root";
+        private $dbname = "RESTAURANTE";
+        private $conn;
+        public function __construct()
+        {
+            $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+    
+            if ($this->conn->connect_error) {
+                echo "nada";
+                die("Conexión fallida: " . $this->conn->connect_error);
+            } else {
+                echo "Conexión exitosa";
             }
         }
-        return self::$conexion;
+    
+        public function query($sql)
+        {
+            $result = $this->conn->query($sql);
+    
+            $data = array();
+    
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+            }
+    
+            return $data;
+        }
+    
+        public function closeConnection()
+        {
+            $this->conn->close();
+        }
     }
-    public static function desconectar()
-    {
-        self::$conexion = null;
-    }
-}
+
 ?>
