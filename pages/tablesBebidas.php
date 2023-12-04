@@ -20,6 +20,7 @@ $bebidas = $db->query("SELECT * FROM bebidas");
     <link href="../css/styles.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
 </head>
 
 <body class="sb-nav-fixed">
@@ -131,12 +132,12 @@ $bebidas = $db->query("SELECT * FROM bebidas");
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                
                             </nav>
                         </div>
 
@@ -186,19 +187,20 @@ $bebidas = $db->query("SELECT * FROM bebidas");
                                 <tbody>
                                     <?php
                                     foreach ($bebidas as $bebida) {
-                                        echo "<tr>";
+                                        echo "<tr id='bebida_" . $bebida["id_bebida"] . "'>";
                                         echo "<td>" . $bebida["id_bebida"] . "</td>";
                                         echo "<td>" . $bebida["nombre"] . "</td>";
                                         echo "<td>" . $bebida["descripcion"] . "</td>";
                                         echo "<td>" . $bebida["precio"] . "</td>";
                                         echo "<td>" . $bebida["id_categoria"] . "</td>";
                                         echo "<td><img src='" . $bebida["imagen_url"] . "' alt='Imagen de la bebida' style='max-width: 100px; max-height: 100px;'></td>";
-                                        echo "<td><button type='button' class='btn btn-warning'>Modificar</button></td>";
-                                        echo "<td><button type='button' class='btn btn-danger'>Eliminar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar-bebida' data-id='" . $bebida["id_bebida"] . "' data-nombre='" . $bebida["nombre"] . "' data-descripcion='" . $bebida["descripcion"] . "' data-precio='" . $bebida["precio"] . "' data-categoria='" . $bebida["id_categoria"] . "' data-imagen='" . $bebida["imagen_url"] . "'>Modificar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-danger' onclick='eliminarBebida(" . $bebida["id_bebida"] . ")'>Eliminar</button></td>";
                                         echo "</tr>";
                                     }
                                     ?>
                                 </tbody>
+
                             </table>
 
                         </div>
@@ -206,26 +208,113 @@ $bebidas = $db->query("SELECT * FROM bebidas");
                 </div>
                 <!-- Modales -->
 
+                <!-- Modal para Agregar Bebida -->
                 <div class="modal" tabindex="-1" role="dialog" id="myModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Modal de Bootstrap</h5>
+                                <h5 class="modal-title">Agregar Bebida</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                Contenido del modal aquí.
+                                <form id="formAgregarBebida">
+                                    <div class="mb-3">
+                                        <label for="nombreBebida" class="form-label">Nombre de la Bebida:</label>
+                                        <input type="text" class="form-control" id="nombreBebida" name="nombreBebida"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="descripcionBebida" class="form-label">Descripción de la
+                                            Bebida:</label>
+                                        <textarea class="form-control" id="descripcionBebida" name="descripcionBebida"
+                                            required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="precioBebida" class="form-label">Precio de la Bebida:</label>
+                                        <input type="number" step="0.01" class="form-control" id="precioBebida"
+                                            name="precioBebida" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="imagenBebida" class="form-label">URL de la Imagen de la
+                                            Bebida:</label>
+                                        <input type="text" class="form-control" id="imagenBebida" name="imagenBebida">
+                                    </div>
+
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarBebida()">Guardar
+                                    cambios</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Modal para Modificar Bebida -->
+                <div class="modal" tabindex="-1" role="dialog" id="modalModificarBebida">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modificar Bebida</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formModificarBebida">
+                                    <input type="hidden" id="idBebidaModificar" name="idBebidaModificar">
+                                    <div class="mb-3">
+                                        <label for="nombreBebidaModificar" class="form-label">Nombre de la
+                                            Bebida:</label>
+                                        <input type="text" class="form-control" id="nombreBebidaModificar"
+                                            name="nombreBebidaModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="descripcionBebidaModificar" class="form-label">Descripción de la
+                                            Bebida:</label>
+                                        <textarea class="form-control" id="descripcionBebidaModificar"
+                                            name="descripcionBebidaModificar" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="precioBebidaModificar" class="form-label">Precio de la
+                                            Bebida:</label>
+                                        <input type="number" step="0.01" class="form-control" id="precioBebidaModificar"
+                                            name="precioBebidaModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="imagenBebidaModificar" class="form-label">URL de la Imagen de la
+                                            Bebida:</label>
+                                        <input type="text" class="form-control" id="imagenBebidaModificar"
+                                            name="imagenBebidaModificar">
+                                    </div>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="modificarBebida()">Guardar
+                                    cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
+
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <!-- Puedes personalizar la cabecera del toast según tus necesidades -->
+                        <strong class="me-auto">Mensaje</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- El contenido del mensaje del toast se actualizará dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+            </div>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center justify-content-between small">
@@ -237,7 +326,6 @@ $bebidas = $db->query("SELECT * FROM bebidas");
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
@@ -245,6 +333,114 @@ $bebidas = $db->query("SELECT * FROM bebidas");
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="../js/datatables-simple-demo.js"></script>
 </body>
+<script>
+
+    function eliminarBebida(idBebida) {
+        var confirmacion = confirm("¿Estás seguro de que deseas eliminar esta bebida?");
+
+        if (confirmacion) {
+            window.location.href = 'eliminar_bebida.php?id=' + idBebida;
+        }
+    }
+
+    function agregarBebida() {
+        var nombreBebida = $("#nombreBebida").val();
+        var descripcionBebida = $("#descripcionBebida").val();
+        var precioBebida = $("#precioBebida").val();
+        var categoriaBebida = $("#categoriaBebida").val();
+        var imagenBebida = $("#imagenBebida").val();
+
+        $.ajax({
+            type: "POST",
+            url: "agregarBebida.php",
+            data: {
+                nombreBebida: nombreBebida,
+                descripcionBebida: descripcionBebida,
+                precioBebida: precioBebida,
+                categoriaBebida: 1,
+                imagenBebida: imagenBebida
+            },
+            success: function (response) {
+                mostrarToast(response);
+                limpiarCamposModal();
+                $("#myModal").modal("hide");
+                header("Location: tablesBebidas.php");
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function mostrarToast(message) {
+        // Actualizar el contenido del toast con el mensaje recibido
+        $("#liveToast .toast-body").text(message);
+
+        // Mostrar el toast
+        var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        toast.show();
+    }
+
+
+
+    function limpiarCamposModal() {
+        // Limpiar los campos del formulario
+        $("#nombreBebida").val("");
+        $("#descripcionBebida").val("");
+        $("#precioBebida").val("");
+        $("#categoriaBebida").val("");
+        $("#imagenBebida").val("");
+    }
+
+    $(document).on("click", ".btn-modificar-bebida", function () {
+        var idBebida = $(this).data("id");
+        var nombreBebida = $(this).data("nombre");
+        var descripcionBebida = $(this).data("descripcion");
+        var precioBebida = $(this).data("precio");
+        var categoriaBebida = $(this).data("categoria");
+        var imagenBebida = $(this).data("imagen");
+
+        $("#idBebidaModificar").val(idBebida);
+        $("#nombreBebidaModificar").val(nombreBebida);
+        $("#descripcionBebidaModificar").val(descripcionBebida);
+        $("#precioBebidaModificar").val(precioBebida);
+        $("#categoriaBebidaModificar").val(categoriaBebida);
+        $("#imagenBebidaModificar").val(imagenBebida);
+
+        $("#modalModificarBebida").modal("show");
+    });
+
+    function modificarBebida() {
+        var idBebida = $("#idBebidaModificar").val();
+        var nombreBebida = $("#nombreBebidaModificar").val();
+        var descripcionBebida = $("#descripcionBebidaModificar").val();
+        var precioBebida = $("#precioBebidaModificar").val();
+        var categoriaBebida = $("#categoriaBebidaModificar").val();
+        var imagenBebida = $("#imagenBebidaModificar").val();
+
+        $.ajax({
+            type: "POST",
+            url: "modificarBebida.php",
+            data: {
+                idBebida: idBebida,
+                nombreBebida: nombreBebida,
+                descripcionBebida: descripcionBebida,
+                precioBebida: precioBebida,
+                categoriaBebida: 1,
+                imagenBebida: imagenBebida
+            },
+            success: function (response) {
+             mostrarToast(response);
+                $("#modalModificarBebida").modal("hide");
+                
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+</script>
 
 </html>
 <?php

@@ -129,12 +129,12 @@ $usuarios = $db->query("SELECT * FROM usuarios");
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+
                             </nav>
                         </div>
 
@@ -189,38 +189,160 @@ $usuarios = $db->query("SELECT * FROM usuarios");
                                         echo "<td>" . $usuario["nombre_completo"] . "</td>";
                                         echo "<td>" . $usuario["correo"] . "</td>";
                                         echo "<td>" . $usuario["contrasena"] . "</td>";
-                                        echo "<td>" . $usuario["rol"] . "</td>";
+
+                                        // Mostrar el valor del rol de manera más legible
+                                        echo "<td>";
+                                        switch ($usuario["rol"]) {
+                                            case 'admin':
+                                                echo "Administrador";
+                                                break;
+                                            case 'usuario':
+                                                echo "Usuario";
+                                                break;
+                                            case 'cliente':
+                                                echo "Cliente";
+                                                break;
+                                            default:
+                                                echo "Desconocido";
+                                                break;
+                                        }
+                                        echo "</td>";
+
                                         echo "<td>" . $usuario["edad"] . "</td>";
-                                        echo "<td><button type='button' class='btn btn-warning'>Modificar</button></td>";
-                                        echo "<td><button type='button' class='btn btn-danger'>Eliminar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar-usuario' data-id='" . $usuario["id_usuario"] . "' data-nombre='" . $usuario["nombre_completo"] . "' data-correo='" . $usuario["correo"] . "' data-contrasena='" . $usuario["contrasena"] . "' data-rol='" . $usuario["rol"] . "' data-edad='" . $usuario["edad"] . "'>Modificar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-danger' onclick='eliminarUsuario(" . $usuario["id_usuario"] . ")'>Eliminar</button></td>";
+
                                         echo "</tr>";
                                     }
                                     ?>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
                 <!-- Modales -->
-
                 <div class="modal" tabindex="-1" role="dialog" id="myModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Modal de Bootstrap</h5>
+                                <h5 class="modal-title">Agregar Usuario</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                Contenido del modal aquí.
+                                <form id="formAgregarUsuario">
+                                    <div class="mb-3">
+                                        <label for="nombreUsuario" class="form-label">Nombre Completo:</label>
+                                        <input type="text" class="form-control" id="nombreUsuario" name="nombreUsuario"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="correoUsuario" class="form-label">Correo:</label>
+                                        <input type="email" class="form-control" id="correoUsuario" name="correoUsuario"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contrasenaUsuario" class="form-label">Contraseña:</label>
+                                        <input type="password" class="form-control" id="contrasenaUsuario"
+                                            name="contrasenaUsuario" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="rolUsuario" class="form-label">Rol del Usuario:</label>
+                                        <select class="form-select" id="rolUsuario" name="rolUsuario" required>
+                                            <option value="admin">Administrador</option>
+                                            <option value="usuario">Usuario</option>
+                                            <option value="cliente">Cliente</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="telefonoUsuario" class="form-label">Teléfono:</label>
+                                        <input type="tel" class="form-control" id="telefonoUsuario"
+                                            name="telefonoUsuario">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="direccionUsuario" class="form-label">Dirección:</label>
+                                        <input type="text" class="form-control" id="direccionUsuario"
+                                            name="direccionUsuario">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="edadUsuario" class="form-label">Edad:</label>
+                                        <input type="number" class="form-control" id="edadUsuario" name="edadUsuario">
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarUsuario()">Guardar
+                                    cambios</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="modal" tabindex="-1" role="dialog" id="modalModificarUsuario">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modificar Usuario</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formModificarUsuario">
+                                    <input type="hidden" id="idUsuarioModificar" name="idUsuarioModificar">
+                                    <div class="mb-3">
+                                        <label for="nombreUsuarioModificar" class="form-label">Nombre Completo:</label>
+                                        <input type="text" class="form-control" id="nombreUsuarioModificar"
+                                            name="nombreUsuarioModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="correoUsuarioModificar" class="form-label">Correo:</label>
+                                        <input type="email" class="form-control" id="correoUsuarioModificar"
+                                            name="correoUsuarioModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contrasenaUsuarioModificar" class="form-label">Contraseña:</label>
+                                        <input type="password" class="form-control" id="contrasenaUsuarioModificar"
+                                            name="contrasenaUsuarioModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="rolUsuarioModificar" class="form-label">Rol del Usuario:</label>
+                                        <select class="form-select" id="rolUsuarioModificar" name="rolUsuarioModificar"
+                                            required>
+                                            <option value="admin">Administrador</option>
+                                            <option value="usuario">Usuario</option>
+                                            <option value="cliente">Cliente</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="telefonoUsuarioModificar" class="form-label">Teléfono:</label>
+                                        <input type="tel" class="form-control" id="telefonoUsuarioModificar"
+                                            name="telefonoUsuarioModificar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="direccionUsuarioModificar" class="form-label">Dirección:</label>
+                                        <input type="text" class="form-control" id="direccionUsuarioModificar"
+                                            name="direccionUsuarioModificar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="edadUsuarioModificar" class="form-label">Edad:</label>
+                                        <input type="number" class="form-control" id="edadUsuarioModificar"
+                                            name="edadUsuarioModificar">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="modificarUsuario()">Guardar
+                                    cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
 
             </main>
             <footer class="py-4 bg-light mt-auto">
@@ -231,6 +353,19 @@ $usuarios = $db->query("SELECT * FROM usuarios");
                     </div>
                 </div>
             </footer>
+            <!-- Toast -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <!-- Puedes personalizar la cabecera del toast según tus necesidades -->
+                        <strong class="me-auto">Mensaje</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- El contenido del mensaje del toast se actualizará dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -242,6 +377,132 @@ $usuarios = $db->query("SELECT * FROM usuarios");
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="../js/datatables-simple-demo.js"></script>
 </body>
+
+<script>
+
+    function mostrarToast(message) {
+        // Actualizar el contenido del toast con el mensaje recibido
+        $("#liveToast .toast-body").text(message);
+
+        // Mostrar el toast
+        var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        toast.show();
+    }
+
+
+
+    function limpiarCamposModal() {
+        // Limpiar los campos del formulario
+        $("#nombreUsuario").val("");
+        $("#correoUsuario").val("");
+        $("#contrasenaUsuario").val("");
+        $("#rolUsuario").val("");
+        $("#telefonoUsuario").val("");
+        $("#direccionUsuario").val("");
+        $("#edadUsuario").val("");
+    }
+    function eliminarUsuario(idUsuario) {
+        var confirmacion = confirm("¿Estás seguro de que deseas eliminar este usuario?");
+
+        if (confirmacion) {
+            window.location.href = 'eliminar_usuario.php?id=' + idUsuario;
+        }
+    }
+
+    function agregarUsuario() {
+        var nombreUsuario = $("#nombreUsuario").val();
+        var correoUsuario = $("#correoUsuario").val();
+        var contrasenaUsuario = $("#contrasenaUsuario").val();
+        var rolUsuario = $("#rolUsuario").val();
+        var telefonoUsuario = $("#telefonoUsuario").val();
+        var direccionUsuario = $("#direccionUsuario").val();
+        var edadUsuario = $("#edadUsuario").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        $.ajax({
+            type: "POST",
+            url: "agregarUsuario.php",
+            data: {
+                nombreUsuario: nombreUsuario,
+                correoUsuario: correoUsuario,
+                contrasenaUsuario: contrasenaUsuario,
+                rolUsuario: rolUsuario,
+                telefonoUsuario: telefonoUsuario,
+                direccionUsuario: direccionUsuario,
+                edadUsuario: edadUsuario
+            },
+            success: function (response) {
+                mostrarToast(response);
+                limpiarCamposModal();
+                $("#myModal").modal("hide");
+                header("Location: tablesUsuarios.php");
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).on("click", ".btn-modificar-usuario", function () {
+        var idUsuario = $(this).data("id");
+        var nombreUsuario = $(this).data("nombre");
+        var correoUsuario = $(this).data("correo");
+        var contrasenaUsuario = $(this).data("contrasena");
+        var rolUsuario = $(this).data("rol");
+        var telefonoUsuario = $(this).data("telefono");
+        var direccionUsuario = $(this).data("direccion");
+        var edadUsuario = $(this).data("edad");
+
+        $("#idUsuarioModificar").val(idUsuario);
+        $("#nombreUsuarioModificar").val(nombreUsuario);
+        $("#correoUsuarioModificar").val(correoUsuario);
+        $("#contrasenaUsuarioModificar").val(contrasenaUsuario);
+        $("#rolUsuarioModificar").val(rolUsuario);
+        $("#telefonoUsuarioModificar").val(telefonoUsuario);
+        $("#direccionUsuarioModificar").val(direccionUsuario);
+        $("#edadUsuarioModificar").val(edadUsuario);
+
+        $("#modalModificarUsuario").modal("show");
+    });
+
+    function modificarUsuario() {
+        var idUsuario = $("#idUsuarioModificar").val();
+        var nombreUsuario = $("#nombreUsuarioModificar").val();
+        var correoUsuario = $("#correoUsuarioModificar").val();
+        var contrasenaUsuario = $("#contrasenaUsuarioModificar").val();
+        var rolUsuario = $("#rolUsuarioModificar").val();
+        var telefonoUsuario = $("#telefonoUsuarioModificar").val();
+        var direccionUsuario = $("#direccionUsuarioModificar").val();
+        var edadUsuario = $("#edadUsuarioModificar").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        $.ajax({
+            type: "POST",
+            url: "modificarUsuario.php",
+            data: {
+                idUsuario: idUsuario,
+                nombreUsuario: nombreUsuario,
+                correoUsuario: correoUsuario,
+                contrasenaUsuario: contrasenaUsuario,
+                rolUsuario: rolUsuario,
+                telefonoUsuario: telefonoUsuario,
+                direccionUsuario: direccionUsuario,
+                edadUsuario: edadUsuario
+            },
+            success: function (response) {
+                mostrarToast(response);
+                $("#modalModificarUsuario").modal("hide");
+                reload();
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
+
 
 </html>
 <?php

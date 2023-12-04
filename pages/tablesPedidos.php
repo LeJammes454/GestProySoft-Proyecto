@@ -2,7 +2,10 @@
 require_once('config.php');
 
 $db = new Database();
-$clientes = $db->query("SELECT * FROM clientes");
+$pedidos = $db->query("SELECT pedidos.id_pedido, pedidos.id_usuario, usuarios.nombre_completo AS nombre_usuario, pedidos.fecha_pedido, pedidos.estado
+FROM pedidos
+JOIN usuarios ON pedidos.id_usuario = usuarios.id_usuario;
+");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -129,12 +132,12 @@ $clientes = $db->query("SELECT * FROM clientes");
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+
                             </nav>
                         </div>
 
@@ -171,57 +174,120 @@ $clientes = $db->query("SELECT * FROM clientes");
                             <table id="datatablesSimple">
                                 <thead>
                                     <tr>
-                                        <th>ID Cliente</th>
+                                        <th>ID Pedido</th>
                                         <th>ID Usuario</th>
-                                        <th>Nombre Completo</th>
-                                        <th>Teléfono</th>
-                                        <th>Dirección</th>
-                                        <th>Edad</th>
+                                        <th>Nombre del Usuario</th>
+                                        <th>Fecha del Pedido</th>
+                                        <th>Estado</th>
                                         <th>Acciones</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($clientes as $cliente) {
+                                    foreach ($pedidos as $pedido) {
                                         echo "<tr>";
-                                        echo "<td>" . $cliente["id_cliente"] . "</td>";
-                                        echo "<td>" . $cliente["id_usuario"] . "</td>";
-                                        echo "<td>" . $cliente["nombre_completo"] . "</td>";
-                                        echo "<td>" . $cliente["telefono"] . "</td>";
-                                        echo "<td>" . $cliente["direccion"] . "</td>";
-                                        echo "<td>" . $cliente["edad"] . "</td>";
-                                        echo "<td><button type='button' class='btn btn-warning'>Modificar</button></td>";
-                                        echo "<td><button type='button' class='btn btn-danger'>Eliminar</button></td>";
+                                        echo "<td>" . $pedido["id_pedido"] . "</td>";
+                                        echo "<td>" . $pedido["id_usuario"] . "</td>";
+                                        echo "<td>" . $pedido["nombre_usuario"] . "</td>";
+                                        echo "<td>" . $pedido["fecha_pedido"] . "</td>";
+                                        echo "<td>" . $pedido["estado"] . "</td>";
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar-pedido' data-id='" . $pedido["id_pedido"] . "' data-id-usuario='" . $pedido["id_usuario"] . "' data-fecha='" . $pedido["fecha_pedido"] . "' data-estado='" . $pedido["estado"] . "'>Modificar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-danger' onclick='eliminarPedido(" . $pedido["id_pedido"] . ")'>Eliminar</button></td>";
                                         echo "</tr>";
                                     }
                                     ?>
                                 </tbody>
-
                             </table>
+
+
                         </div>
                     </div>
                 </div>
                 <!-- Modales -->
 
+                <!-- Modal para Agregar Pedido -->
                 <div class="modal" tabindex="-1" role="dialog" id="myModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Modal de Bootstrap</h5>
+                                <h5 class="modal-title">Agregar Pedido</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                Contenido del modal aquí.
+                                <form id="formAgregarPedido">
+                                    <div class="mb-3">
+                                        <label for="idUsuario" class="form-label">ID del Usuario:</label>
+                                        <input type="text" class="form-control" id="idUsuario" name="idUsuario"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fechaPedido" class="form-label">Fecha del Pedido:</label>
+                                        <input type="date" class="form-control" id="fechaPedido" name="fechaPedido"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="estadoPedido" class="form-label">Estado del Pedido:</label>
+                                        <select class="form-control" id="estadoPedido" name="estadoPedido" required>
+                                            <option value="en_proceso">En Proceso</option>
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="cancelada">Cancelada</option>
+                                        </select>
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarPedido()">Guardar
+                                    cambios</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal para Modificar Pedido -->
+                <div class="modal" tabindex="-1" role="dialog" id="modalModificarPedido">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modificar Pedido</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formModificarPedido">
+                                    <input type="hidden" id="idPedidoModificar" name="idPedidoModificar">
+                                    <div class="mb-3">
+                                        <label for="idUsuarioModificar" class="form-label">ID del Usuario:</label>
+                                        <input type="text" class="form-control" id="idUsuarioModificar"
+                                            name="idUsuarioModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fechaPedidoModificar" class="form-label">Fecha del Pedido:</label>
+                                        <input type="date" class="form-control" id="fechaPedidoModificar"
+                                            name="fechaPedidoModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="estadoPedidoModificar" class="form-label">Estado del Pedido:</label>
+                                        <select class="form-control" id="estadoPedidoModificar"
+                                            name="estadoPedidoModificar" required>
+                                            <option value="en_proceso">En Proceso</option>
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="cancelada">Cancelada</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="modificarPedido()">Guardar
+                                    cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </main>
             <footer class="py-4 bg-light mt-auto">
@@ -232,6 +298,19 @@ $clientes = $db->query("SELECT * FROM clientes");
                     </div>
                 </div>
             </footer>
+            <!-- Toast -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <!-- Puedes personalizar la cabecera del toast según tus necesidades -->
+                        <strong class="me-auto">Mensaje</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- El contenido del mensaje del toast se actualizará dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -243,6 +322,96 @@ $clientes = $db->query("SELECT * FROM clientes");
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="../js/datatables-simple-demo.js"></script>
 </body>
+
+<script>
+    function eliminarPedido(idPedido) {
+        var confirmacion = confirm("¿Estás seguro de que deseas eliminar este pedido?");
+
+        if (confirmacion) {
+            window.location.href = 'eliminar_pedido.php?id=' + idPedido;
+        }
+    }
+
+    function agregarPedido() {
+        var idUsuario = $("#idUsuario").val();
+        var fechaPedido = $("#fechaPedido").val();
+        var estadoPedido = $("#estadoPedido").val();
+
+        $.ajax({
+            type: "POST",
+            url: "agregarPedido.php",
+            data: {
+                idUsuario: idUsuario,
+                fechaPedido: fechaPedido,
+                estadoPedido: estadoPedido
+            },
+            success: function (response) {
+                mostrarToast(response);
+                limpiarCamposModal();
+                $("#myModal").modal("hide");
+                // Puedes redirigir o recargar la página según tus necesidades
+                // window.location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).on("click", ".btn-modificar-pedido", function () {
+        var idPedido = $(this).data("id");
+        var idUsuario = $(this).data("id-usuario");
+        var fechaPedido = $(this).data("fecha");
+        var estadoPedido = $(this).data("estado");
+
+        $("#idPedidoModificar").val(idPedido);
+        $("#idUsuarioModificar").val(idUsuario);
+        $("#fechaPedidoModificar").val(fechaPedido);
+        $("#estadoPedidoModificar").val(estadoPedido);
+
+        $("#modalModificarPedido").modal("show");
+    });
+
+    function modificarPedido() {
+        var idPedido = $("#idPedidoModificar").val();
+        var idUsuario = $("#idUsuarioModificar").val();
+        var fechaPedido = $("#fechaPedidoModificar").val();
+        var estadoPedido = $("#estadoPedidoModificar").val();
+
+        $.ajax({
+            type: "POST",
+            url: "modificarPedido.php",
+            data: {
+                idPedido: idPedido,
+                idUsuario: idUsuario,
+                fechaPedido: fechaPedido,
+                estadoPedido: estadoPedido
+            },
+            success: function (response) {
+                mostrarToast(response);
+                $("#modalModificarPedido").modal("hide");
+                // Puedes redirigir o recargar la página según tus necesidades
+                // window.location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function mostrarToast(message) {
+        $("#liveToast .toast-body").text(message);
+        var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        toast.show();
+    }
+
+    function limpiarCamposModal() {
+        $("#idUsuario").val("");
+        $("#fechaPedido").val("");
+        $("#estadoPedido").val("");
+    }
+
+</script>
 
 </html>
 <?php
