@@ -131,12 +131,12 @@ $platillos = $db->query("SELECT * FROM platillos");
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                
                             </nav>
                         </div>
 
@@ -193,10 +193,8 @@ $platillos = $db->query("SELECT * FROM platillos");
                                         echo "<td>" . $platillo["precio"] . "</td>";
                                         echo "<td>" . $platillo["id_categoria"] . "</td>";
                                         echo "<td><img src='" . $platillo["imagen_url"] . "' alt='Imagen del platillo' style='max-width: 100px; max-height: 100px;'></td>";
-                                        echo "<td><button type='button' class='btn btn-warning btn-modificar' data-id='" . $platillo["id_platillo"] . "'>Modificar</button></td>";
-
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar' data-id='" . $platillo["id_platillo"] . "' data-nombre='" . $platillo["nombre"] . "' data-descripcion='" . $platillo["descripcion"] . "' data-precio='" . $platillo["precio"] . "' data-categoria='" . $platillo["id_categoria"] . "' data-imagen='" . $platillo["imagen_url"] . "'>Modificar</button></td>";
                                         echo "<td><button type='button' class='btn btn-danger' onclick='eliminarPlatillo(" . $platillo["id_platillo"] . ")'>Eliminar</button></td>";
-
                                         echo "</tr>";
                                     }
                                     ?>
@@ -207,6 +205,7 @@ $platillos = $db->query("SELECT * FROM platillos");
                 </div>
                 <!-- Modales -->
 
+                <!-- Modal para Agregar Platillo -->
                 <div class="modal" tabindex="-1" role="dialog" id="myModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -234,17 +233,6 @@ $platillos = $db->query("SELECT * FROM platillos");
                                             name="precioPlatillo" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="categoriaPlatillo" class="form-label">Categoría del
-                                            Platillo:</label>
-                                        <select class="form-select" id="categoriaPlatillo" name="categoriaPlatillo"
-                                            required>
-                                            <!-- Aquí puedes agregar opciones dinámicamente desde tu base de datos -->
-                                            <option value="1">Categoría 1</option>
-                                            <option value="2">Categoría 2</option>
-                                            <!-- Agrega más opciones según tus necesidades -->
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
                                         <label for="imagenPlatillo" class="form-label">URL de la Imagen del
                                             Platillo:</label>
                                         <input type="text" class="form-control" id="imagenPlatillo"
@@ -260,6 +248,55 @@ $platillos = $db->query("SELECT * FROM platillos");
                         </div>
                     </div>
                 </div>
+
+                <!-- Modal para Modificar Platillo -->
+                <div class="modal" tabindex="-1" role="dialog" id="modalModificarPlatillo">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modificar Platillo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formModificarPlatillo">
+                                    <input type="hidden" id="idPlatilloModificar" name="idPlatilloModificar">
+                                    <div class="mb-3">
+                                        <label for="nombrePlatilloModificar" class="form-label">Nombre del
+                                            Platillo:</label>
+                                        <input type="text" class="form-control" id="nombrePlatilloModificar"
+                                            name="nombrePlatilloModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="descripcionPlatilloModificar" class="form-label">Descripción del
+                                            Platillo:</label>
+                                        <textarea class="form-control" id="descripcionPlatilloModificar"
+                                            name="descripcionPlatilloModificar" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="precioPlatilloModificar" class="form-label">Precio del
+                                            Platillo:</label>
+                                        <input type="number" step="0.01" class="form-control"
+                                            id="precioPlatilloModificar" name="precioPlatilloModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="imagenPlatilloModificar" class="form-label">URL de la Imagen del
+                                            Platillo:</label>
+                                        <input type="text" class="form-control" id="imagenPlatilloModificar"
+                                            name="imagenPlatilloModificar">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="modificarPlatillo()">Guardar
+                                    cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid px-4">
@@ -323,7 +360,7 @@ $platillos = $db->query("SELECT * FROM platillos");
                 nombrePlatillo: nombrePlatillo,
                 descripcionPlatillo: descripcionPlatillo,
                 precioPlatillo: precioPlatillo,
-                categoriaPlatillo: categoriaPlatillo,
+                categoriaPlatillo: 2,
                 imagenPlatillo: imagenPlatillo
             },
             success: function (response) {
@@ -335,6 +372,8 @@ $platillos = $db->query("SELECT * FROM platillos");
 
                 // Cerrar el modal
                 $("#myModal").modal("hide");
+
+                header("Location: tablesPlatillos.php");
             },
             error: function (error) {
                 console.error(error);
@@ -361,6 +400,66 @@ $platillos = $db->query("SELECT * FROM platillos");
         $("#categoriaPlatillo").val("");
         $("#imagenPlatillo").val("");
     }
+
+    $(document).on("click", ".btn-modificar", function () {
+        // Obtener los datos del botón
+        var idPlatillo = $(this).data("id");
+        var nombrePlatillo = $(this).data("nombre");
+        var descripcionPlatillo = $(this).data("descripcion");
+        var precioPlatillo = $(this).data("precio");
+        var categoriaPlatillo = $(this).data("categoria");
+        var imagenPlatillo = $(this).data("imagen");
+
+        // Poblar el formulario del modal con los datos del platillo
+        $("#idPlatilloModificar").val(idPlatillo);
+        $("#nombrePlatilloModificar").val(nombrePlatillo);
+        $("#descripcionPlatilloModificar").val(descripcionPlatillo);
+        $("#precioPlatilloModificar").val(precioPlatillo);
+        $("#categoriaPlatilloModificar").val(categoriaPlatillo);
+        $("#imagenPlatilloModificar").val(imagenPlatillo);
+
+        // Mostrar el modal de Modificar
+        $("#modalModificarPlatillo").modal("show");
+    });
+
+    function modificarPlatillo() {
+        // Obtener los valores del formulario de modificar
+        var idPlatillo = $("#idPlatilloModificar").val();
+        var nombrePlatillo = $("#nombrePlatilloModificar").val();
+        var descripcionPlatillo = $("#descripcionPlatilloModificar").val();
+        var precioPlatillo = $("#precioPlatilloModificar").val();
+        var categoriaPlatillo = $("#categoriaPlatilloModificar").val();
+        var imagenPlatillo = $("#imagenPlatilloModificar").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        // Enviar los datos al servidor mediante AJAX
+        $.ajax({
+            type: "POST",
+            url: "platillosDao.php",
+            data: {
+                idPlatillo: idPlatillo,
+                nombrePlatillo: nombrePlatillo,
+                descripcionPlatillo: descripcionPlatillo,
+                precioPlatillo: precioPlatillo,
+                categoriaPlatillo: 2,
+                imagenPlatillo: imagenPlatillo
+            },
+            success: function (response) {
+                // Mostrar el toast
+                mostrarToast(response);
+
+                // Cerrar el modal de modificar
+                $("#modalModificarPlatillo").modal("hide");
+                reload()
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+
 </script>
 
 

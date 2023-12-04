@@ -129,12 +129,12 @@ $historialPedidosReservas = $db->query("SELECT * FROM historial_pedidos_reservas
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                
                             </nav>
                         </div>
 
