@@ -47,10 +47,6 @@ function validateForm() {
     }
 
     if (isValid) {
-        showAlert(nombreComplInput.value,
-        edadInput.value,
-         correoInput.value,
-         passwoInput.value,);
         $.ajax({
             url: "../php/registrarUsuario.php",
             type: "POST",
@@ -73,11 +69,7 @@ function validateForm() {
                 }
             },
             error: function () {
-                //window.location.href = "login.html";
-                showAlert(nombreComplInput.value,
-                    edadInput.value,
-                     correoInput.value,
-                     passwoInput.value,);
+                window.location.href = "login.html";
                 //showAlert('Error al conectar con el servidor');
             },
         });

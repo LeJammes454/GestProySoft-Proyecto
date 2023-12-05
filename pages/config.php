@@ -10,12 +10,15 @@ class Database
     {
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
 
+       
+       /*
         if ($this->conn->connect_error) {
             echo "nada";
             die("Conexión fallida: " . $this->conn->connect_error);
         } else {
             echo "Conexión exitosa";
         }
+        */
     }
 
     public function query($sql)

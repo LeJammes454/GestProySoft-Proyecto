@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Menú del Restaurante</title>
+</head>
+<body>
+    <header>
+        <h1>La Mesa De Los Sabores</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#" class="filter" data-category="todos">Todos</a></li>
+            <li><a href="#" class="filter" data-category="entradas">Entradas</a></li>
+            <li><a href="#" class="filter" data-category="principal">Platillo Principal</a></li>
+            <li><a href="#" class="filter" data-category="acompañamientos">Acompañamientos</a></li>
+            <li><a href="#" class="filter" data-category="postres">postres</a></li>
+            <li><a href="#" class="filter" data-category="bebidas">Bebidas</a></li>
+
+        </ul>
+    </nav>
+
+    <section id="menu">
+        <!-- Lista de productos se generará aquí -->
+    </section>
+
+    <aside id="cart">
+        <h2>Carrito de Compras</h2>
+        <ul id="cart-items">
+            <!-- Elementos del carrito se generan aquí -->
+        </ul>
+        <p>Total: <span id="cart-total">$0.00</span></p>
+        <button id="checkout">Realizar Pedido</button>
+    </aside>
+
+    <footer>
+        <p>&copy; La Mesa De Los Sabores</p>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

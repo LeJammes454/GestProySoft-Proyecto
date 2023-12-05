@@ -129,12 +129,12 @@ $comentariosValoraciones = $db->query("SELECT * FROM comentarios_valoraciones");
                             <nav class="sb-sidenav-menu-nested nav">
                                 <a class="nav-link" href="tablesBebidas.php">Bebidas</a>
                                 <a class="nav-link" href="tablesPlatillos.php">Platillos</a>
-                                <a class="nav-link" href="tablesClientes.php">Clientes</a>
                                 <a class="nav-link" href="tablesPedidos.php">Pedidos</a>
-                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
                                 <a class="nav-link" href="tablesReservas.php">Reservas</a>
                                 <a class="nav-link" href="tablesComVal.php">Reseñas y Comentarios</a>
-                                <a class="nav-link" href="tablesUsuarios.php">Usuarios</a>
+                                <a class="nav-link" href="tablesHistorialpedidos.php">Historial pedidos</a>
+
                             </nav>
                         </div>
 
@@ -184,11 +184,11 @@ $comentariosValoraciones = $db->query("SELECT * FROM comentarios_valoraciones");
                                     foreach ($comentariosValoraciones as $comentarioValoracion) {
                                         echo "<tr>";
                                         echo "<td>" . $comentarioValoracion["id_comentario"] . "</td>";
-                                        echo "<td>" . $comentarioValoracion["id_cliente"] . "</td>";
+                                        echo "<td>" . $comentarioValoracion["id_usuario"] . "</td>";
                                         echo "<td>" . $comentarioValoracion["comentario"] . "</td>";
                                         echo "<td>" . $comentarioValoracion["valoracion"] . "</td>";
-                                        echo "<td><button type='button' class='btn btn-warning'>Modificar</button></td>";
-                                        echo "<td><button type='button' class='btn btn-danger'>Eliminar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-warning btn-modificar' data-id='" . $comentarioValoracion["id_comentario"] . "' data-usuario='" . $comentarioValoracion["id_usuario"] . "' data-comentario='" . $comentarioValoracion["comentario"] . "' data-valoracion='" . $comentarioValoracion["valoracion"] . "'>Modificar</button></td>";
+                                        echo "<td><button type='button' class='btn btn-danger' onclick='eliminarComentarioValoracion(" . $comentarioValoracion["id_comentario"] . ")'>Eliminar</button></td>";
                                         echo "</tr>";
                                     }
                                     ?>
@@ -199,24 +199,80 @@ $comentariosValoraciones = $db->query("SELECT * FROM comentarios_valoraciones");
                 </div>
                 <!-- Modales -->
 
+                <!-- Modal para Agregar Comentario y Valoración -->
                 <div class="modal" tabindex="-1" role="dialog" id="myModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Modal de Bootstrap</h5>
+                                <h5 class="modal-title">Agregar Comentario y Valoración</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Cerrar"></button>
                             </div>
                             <div class="modal-body">
-                                Contenido del modal aquí.
+                                <form id="formAgregarComentarioValoracion">
+                                    <div class="mb-3">
+                                        <label for="idUsuario" class="form-label">ID de Usuario:</label>
+                                        <input type="number" class="form-control" id="idUsuario" name="idUsuario"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="comentario" class="form-label">Comentario:</label>
+                                        <textarea class="form-control" id="comentario" name="comentario"
+                                            required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="valoracion" class="form-label">Valoración:</label>
+                                        <input type="number" class="form-control" id="valoracion" name="valoracion"
+                                            required>
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary">Guardar cambios</button>
+                                <button type="button" class="btn btn-primary"
+                                    onclick="agregarComentarioValoracion()">Guardar cambios</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- Modal para Modificar Comentario y Valoración -->
+                <div class="modal" tabindex="-1" role="dialog" id="modalModificarComentarioValoracion">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Modificar Comentario y Valoración</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formModificarComentarioValoracion">
+                                    <input type="hidden" id="idComentarioModificar" name="idComentarioModificar">
+                                    <div class="mb-3">
+                                        <label for="idUsuarioModificar" class="form-label">ID de Usuario:</label>
+                                        <input type="number" class="form-control" id="idUsuarioModificar"
+                                            name="idUsuarioModificar" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="comentarioModificar" class="form-label">Comentario:</label>
+                                        <textarea class="form-control" id="comentarioModificar"
+                                            name="comentarioModificar" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="valoracionModificar" class="form-label">Valoración:</label>
+                                        <input type="number" class="form-control" id="valoracionModificar"
+                                            name="valoracionModificar" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary"
+                                    onclick="modificarComentarioValoracion()">Guardar cambios</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </main>
             <footer class="py-4 bg-light mt-auto">
@@ -227,6 +283,19 @@ $comentariosValoraciones = $db->query("SELECT * FROM comentarios_valoraciones");
                     </div>
                 </div>
             </footer>
+            <!-- Toast -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <!-- Puedes personalizar la cabecera del toast según tus necesidades -->
+                        <strong class="me-auto">Mensaje</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        <!-- El contenido del mensaje del toast se actualizará dinámicamente desde JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -238,6 +307,121 @@ $comentariosValoraciones = $db->query("SELECT * FROM comentarios_valoraciones");
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="../js/datatables-simple-demo.js"></script>
 </body>
+<script>
+    function eliminarComentarioValoracion(idComentario) {
+        // Puedes mostrar un mensaje de confirmación o realizar una solicitud AJAX aquí
+        var confirmacion = confirm("¿Estás seguro de que deseas eliminar este comentario y valoración?");
+
+        if (confirmacion) {
+            // Realiza la acción de eliminación (puedes redirigir a un script PHP que maneje la eliminación)
+            window.location.href = 'eliminar_comval.php?id=' + idComentario;
+        }
+    }
+
+    function agregarComentarioValoracion() {
+        // Obtener los valores del formulario
+        var idUsuario = $("#idUsuario").val();
+        var comentario = $("#comentario").val();
+        var valoracion = $("#valoracion").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        // Enviar los datos al servidor mediante AJAX
+        $.ajax({
+            type: "POST",
+            url: "agregarComVal.php",
+            data: {
+                idUsuario: idUsuario,
+                comentario: comentario,
+                valoracion: valoracion
+            },
+            success: function (response) {
+                // Mostrar el toast
+                mostrarToast(response);
+
+                // Limpiar los campos del modal
+                limpiarCamposModal();
+
+                // Cerrar el modal
+                $("#myModal").modal("hide");
+
+                // Puedes redirigir o recargar la página según tus necesidades
+                location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function mostrarToast(message) {
+        // Actualizar el contenido del toast con el mensaje recibido
+        $("#liveToast .toast-body").text(message);
+
+        // Mostrar el toast
+        var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+        toast.show();
+    }
+
+    function limpiarCamposModal() {
+        // Limpiar los campos del formulario
+        $("#idUsuario").val("");
+        $("#comentario").val("");
+        $("#valoracion").val("");
+    }
+
+    $(document).on("click", ".btn-modificar", function () {
+        // Obtener los datos del botón
+        var idComentario = $(this).data("id");
+        var idUsuario = $(this).data("usuario");
+        var comentario = $(this).data("comentario");
+        var valoracion = $(this).data("valoracion");
+
+        // Poblar el formulario del modal con los datos del comentario y valoración
+        $("#idComentarioModificar").val(idComentario);
+        $("#idUsuarioModificar").val(idUsuario);
+        $("#comentarioModificar").val(comentario);
+        $("#valoracionModificar").val(valoracion);
+
+        // Mostrar el modal de Modificar
+        $("#modalModificarComentarioValoracion").modal("show");
+    });
+
+    function modificarComentarioValoracion() {
+        // Obtener los valores del formulario de modificar
+        var idComentario = $("#idComentarioModificar").val();
+        var idUsuario = $("#idUsuarioModificar").val();
+        var comentario = $("#comentarioModificar").val();
+        var valoracion = $("#valoracionModificar").val();
+
+        // Validar que los campos no estén vacíos (puedes agregar más validaciones según tus necesidades)
+
+        // Enviar los datos al servidor mediante AJAX
+        $.ajax({
+            type: "POST",
+            url: "modificarComVal.php",
+            data: {
+                idComentario: idComentario,
+                idUsuario: idUsuario,
+                comentario: comentario,
+                valoracion: valoracion
+            },
+            success: function (response) {
+                // Mostrar el toast
+                mostrarToast(response);
+
+                // Cerrar el modal de modificar
+                $("#modalModificarComentarioValoracion").modal("hide");
+
+                // Puedes redirigir o recargar la página según tus necesidades
+                location.reload();
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
 
 </html>
 <?php
