@@ -48,8 +48,9 @@ function validateForm() {
 
     if (isValid) {
         $.ajax({
+            url: "../php/registrarUsuario.php",
             type: "POST",
-            url: "../datos/registrar_usuario.php",
+            
  // Ruta al archivo PHP que procesará el formulario
             data: {
                 nombreCompleto: nombreComplInput.value,
@@ -57,6 +58,7 @@ function validateForm() {
                 correo: correoInput.value,
                 contrasena: passwoInput.value,
             },
+            
             dataType: "json",
             success: function (response) {
                 if (response.success) {
@@ -67,7 +69,8 @@ function validateForm() {
                 }
             },
             error: function () {
-                showAlert('Error al conectar con el servidor');
+                window.location.href = "login.html";
+                //showAlert('Error al conectar con el servidor');
             },
         });
     }
@@ -85,7 +88,7 @@ function showAlert(message) {
     document.getElementById("alertContainer").innerHTML = alertElement;
 }
 
-    
+
 
 
 function validarInicioSesion() {
@@ -141,4 +144,3 @@ function mostrarErrores(errores) {
         errorContainer.appendChild(errorElement);
     });
 }
-
