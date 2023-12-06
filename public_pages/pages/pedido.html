@@ -1,0 +1,39 @@
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Confirmación de Pedido</title>
+</head>
+<body>
+    <header>
+        <h1>La Mesa De Los Sabores</h1>
+    </header>
+
+    <section id="order-summary">
+        <h2>Resumen del Pedido</h2>
+        <!-- Tabla para mostrar la información del pedido -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="order-details">
+                <!-- Los detalles del pedido se generarán aquí -->
+            </tbody>
+        </table>
+        <p>Total: <span id="order-total">$0.00</span></p>
+    </section>
+
+    <footer>
+        <p>&copy; La Mesa De Los Sabores</p>
+    </footer>
+
+    <script src="../js/infopedido.js"></script>
+</body>
+</html>
